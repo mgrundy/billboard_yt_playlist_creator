@@ -66,7 +66,7 @@ Usage
     created in step #5. Then run:
 
     ```sh
-    $ pipenv run python createbillboardplaylist.py --noauth_local_webserver
+    $ pipenv run python createsetplaylist.py --noauth_local_webserver
     ```
 
 8. The first time you run the script, you will have to authenticate the
@@ -81,7 +81,7 @@ Usage
     arguments:
 
     ```sh
-    $ pipenv run python createbillboardplaylist.py
+    $ pipenv run python createsetplaylist.py
     ```
 
 Troubleshooting
