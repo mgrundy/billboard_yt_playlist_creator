@@ -44,7 +44,7 @@ from oauth2client.client import flow_from_clientsecrets
 from oauth2client.tools import run_flow
 
 # billboard.py
-import billboard
+# import billboard
 
 # Almost every function needs the YouTube resource, so define it globally
 youtube = None
@@ -167,27 +167,23 @@ def add_chart_entries_to_playlist(pl_id, entries):
         if song_count > 100:
             break
 
-        query = entry.artist + ' ' + entry.title
-        song_info = ('#' + str(entry.rank) + ': ' + entry.artist + ' - ' +
-                     entry.title)
-
-        print('Adding ' + song_info)
-        add_first_found_video_to_playlist(pl_id, query)
+        print('Adding ' + entry)
+        add_first_found_video_to_playlist(pl_id, entry)
 
     print("\n---\n")
 
-def create_playlist_from_chart(chart_id, chart_name, num_songs_phrase, web_url):
+def create_playlist_from_chart(options):
     """Create and populate a new playlist with the current Billboard chart with the given ID"""
-    # Get the songs from the Billboard web page
-    chart = billboard.ChartData(chart_id)
-    chart_date = datetime.strptime(chart.date, '%Y-%m-%d').strftime("%B %d, %Y")
+    # Read in setlist file
+    #chart = billboard.ChartData(chart_id)
+    with open(options.list) as data_file:
+        chart = data_file.read().splitlines()
+    print(chart)
 
     # Create a new playlist, if it doesn't already exist
     pl_id = ""
-    pl_title = "{0} - {1}".format(chart_name, chart_date)
-    pl_description = ("This playlist contains the " + num_songs_phrase + "songs "
-                      "in the Billboard " + chart_name + " Songs chart for the "
-                      "week of " + chart_date + ".  " + web_url)
+    pl_title = options.title
+    pl_description = "Set list"
 
     # Check for an existing playlist with the same title
     if playlist_exists_with_title(pl_title):
@@ -196,7 +192,7 @@ def create_playlist_from_chart(chart_id, chart_name, num_songs_phrase, web_url):
         return
 
     pl_id = create_new_playlist(pl_title, pl_description)
-    add_chart_entries_to_playlist(pl_id, chart.entries)
+    add_chart_entries_to_playlist(pl_id, chart)
     return
 
 def load_config_values():
@@ -228,7 +224,7 @@ def load_config_values():
 
     return config_values
 
-def create_youtube_service(config):
+def create_youtube_service(config, flags):
     """Create an instance of the YouTube service from the Google Data API library"""
     global youtube
 
@@ -251,11 +247,6 @@ def create_youtube_service(config):
     credentials = storage.get()
 
     if credentials is None or credentials.invalid:
-        parser = argparse.ArgumentParser(description=__doc__,
-                                         formatter_class=argparse.RawDescriptionHelpFormatter,
-                                         parents=[oauth2client.tools.argparser])
-        flags = parser.parse_args()
-
         credentials = run_flow(flow, storage, flags)
 
     # Create the service to use throughout the script
@@ -270,52 +261,38 @@ def get_script_dir():
     """Returns the absolute path to the script directory"""
     return os.path.dirname(os.path.realpath(__file__)) + '/'
 
+def parse_command_line():
+    """ Command line argument parser """
+    parser = argparse.ArgumentParser(usage="Usage: %(prog)s [options]",
+                                     parents=[oauth2client.tools.argparser])
+
+    # yapf: disable
+    parser.add_argument("-l", dest="list", type=str,
+                        help="file containing set list")
+    parser.add_argument("-t", dest="title", type=str,
+                        help="Play list title")
+    # yapf: enable
+
+    parser.set_defaults(
+        list=None
+        )
+
+    return parser.parse_args()
+
+
 def main():
     """Main script function"""
-    print("### Script started at " + time.strftime("%c") + " ###\n")
+#    print("### Script started at " + time.strftime("%c") + " ###\n")
+
+#    parser = argparse.ArgumentParser(description=__doc__,
+#                                     formatter_class=argparse.RawDescriptionHelpFormatter,
+#                                     parents=[oauth2client.tools.argparser])
+    flags = parse_command_line()
 
     config = load_config_values()
-    create_youtube_service(config)
+    create_youtube_service(config, flags)
 
-    # Billboard Rock Songs
-    create_playlist_from_chart(
-        "rock-songs",
-        "Rock",
-        "top 25 ",
-        "http://www.billboard.com/charts/rock-songs"
-    )
-
-    # Billboard R&B/Hip-Hop Songs
-    create_playlist_from_chart(
-        "r-b-hip-hop-songs",
-        "R&B/Hip-Hop",
-        "top 25 ",
-        "http://www.billboard.com/charts/r-b-hip-hop-songs"
-    )
-
-    # Billboard Dance/Club Play Songs
-    create_playlist_from_chart(
-        "dance-club-play-songs",
-        "Dance/Club Play",
-        "top 25 ",
-        "http://www.billboard.com/charts/dance-club-play-songs"
-    )
-
-    # Billboard Pop Songs
-    create_playlist_from_chart(
-        "pop-songs",
-        "Pop",
-        "top 20 ",
-        "http://www.billboard.com/charts/pop-songs"
-    )
-
-    # Billboard Hot 100
-    create_playlist_from_chart(
-        "hot-100",
-        "Hot 100",
-        "",
-        "http://www.billboard.com/charts/hot-100"
-    )
+    create_playlist_from_chart(flags)
 
     print("### Script finished at " + time.strftime("%c") + " ###\n")
 

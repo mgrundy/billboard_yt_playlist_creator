@@ -1,35 +1,31 @@
-Create YouTube Playlists of Music Charts
+Create YouTube Playlists from  Set Lists
 ========================================
 
 [![License](https://img.shields.io/badge/License-GPL3-blue.svg)](COPYING)
 
-This is a Python script that will download some of the current Billboard charts
-and create YouTube playlists containing videos for all the songs for the charts.
-If it is run regularly, it will create new playlists each week for the
-current Billboard charts.
+This is a Python script that will take a text file with your cover tunes set list
+and create a YouTube playlist containing videos for all the songs in the list.
+Perfect for the music director of a working cover band to create playlists to break
+in new tunes or new players.
 
-When run, the script downloads the current charts from RSS feeds on the
-Billboard website.  For each chart, it searches YouTube for a video of each
-song and adds the first result to a dated playlist of the chart for the current
-week.
+When run, the script reads in the text file. Since it uses youtube's search function
+it doesn't need to be a specific format. Each line can be as simple as the song name
+and the band that does it. If there is a specific version you'd like to include, just
+put in the title as it shows on youtube (e.g. Long version, or metal version).  For 
+each line in the list, it searches YouTube for a video of each song and adds the 
+first result to a playlist with the title you specified.
 
-The script creates playlists for these charts:
+This program is built from [Adam Goforth's Billboard Top N Playlist creator](https://github.com/aag/billboard_yt_playlist_creator). Finding his work allowed me to get this working within an house. GPL FTW!
 
-- Hot 100
-- Pop
-- Dance/Club Play
-- R&B/Hip-Hop
-- Rock
 
 An example of what the script creates can be seen here:
 
-http://www.youtube.com/user/GimmeThatHotPopMusic
+https://www.youtube.com/playlist?list=PL3YYv-ltyAmMX-H2CwI9h4awPRAauJ2PI
 
 Dependencies
 ------------
-This script depends on Python 2.7 and these Python packages:
+This script depends on Python 3.4 and these Python packages:
 - [Google API v3 Client Library for Python](https://developers.google.com/api-client-library/python/)
-- [billboard.py](https://github.com/guoguo12/billboard-charts)
 
 Usage
 -----
