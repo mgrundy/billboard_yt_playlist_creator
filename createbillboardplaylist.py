@@ -26,10 +26,12 @@ http://www.youtube.com/user/GimmeThatHotPopMusic
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import absolute_import
+from __future__ import print_function
 import argparse
 import os.path
 import time
-from ConfigParser import SafeConfigParser
+from six.moves.configparser import SafeConfigParser
 from datetime import datetime
 
 import httplib2
@@ -55,7 +57,7 @@ def get_video_id_for_search(query):
     search_response = youtube.search().list(
         q=query,
         part="id,snippet",
-        maxResults=3,
+        maxResults=1,
         safeSearch="none",
         type="video",
         fields="items"
@@ -71,7 +73,7 @@ def get_video_id_for_search(query):
         if item['id']['kind'] == 'youtube#video':
             return item['id']['videoId']
         else:
-            print "\tResult is not a video, continuing to next result"
+            print("\tResult is not a video, continuing to next result")
 
     return None
 
@@ -83,7 +85,7 @@ def add_video_to_playlist(pl_id, video_id):
     """Adds the given video as the last video as the last one in the given
     playlist
     """
-    print "\tAdding video pl_id: " + pl_id + " video_id: " + video_id
+    print("\tAdding video pl_id: " + pl_id + " video_id: " + video_id)
 
     video_insert_response = youtube.playlistItems().insert(
         part="snippet",
@@ -101,7 +103,7 @@ def add_video_to_playlist(pl_id, video_id):
 
     title = video_insert_response['snippet']['title']
 
-    print '\tVideo added: {0}'.format(title.encode('utf-8'))
+    print('\tVideo added: {0}'.format(title.encode('utf-8')))
 
 def add_first_found_video_to_playlist(pl_id, search_query):
     """Does a search for videos and adds the first result to the given playlist"""
@@ -109,8 +111,8 @@ def add_first_found_video_to_playlist(pl_id, search_query):
 
     # No search results were found, so print a message and return
     if video_id is None:
-        print("No search results found for '" + search_query + "'. "
-              "Moving on to the next song.")
+        print(("No search results found for '" + search_query + "'. "
+              "Moving on to the next song."))
         return
 
     add_video_to_playlist(pl_id, video_id)
@@ -134,9 +136,9 @@ def create_new_playlist(title, description):
     pl_id = playlists_insert_response['id']
     pl_url = playlist_url_from_id(pl_id)
 
-    print "New playlist added: {0}".format(title)
-    print "\tID: {0}".format(pl_id)
-    print "\tURL: {0}".format(pl_url)
+    print("New playlist added: {0}".format(title))
+    print("\tID: {0}".format(pl_id))
+    print("\tURL: {0}".format(pl_url))
 
     return pl_id
 
@@ -169,10 +171,10 @@ def add_chart_entries_to_playlist(pl_id, entries):
         song_info = ('#' + str(entry.rank) + ': ' + entry.artist + ' - ' +
                      entry.title)
 
-        print 'Adding ' + song_info
+        print('Adding ' + song_info)
         add_first_found_video_to_playlist(pl_id, query)
 
-    print "\n---\n"
+    print("\n---\n")
 
 def create_playlist_from_chart(chart_id, chart_name, num_songs_phrase, web_url):
     """Create and populate a new playlist with the current Billboard chart with the given ID"""
@@ -189,8 +191,8 @@ def create_playlist_from_chart(chart_id, chart_name, num_songs_phrase, web_url):
 
     # Check for an existing playlist with the same title
     if playlist_exists_with_title(pl_title):
-        print("Playlist already exists with title '" + pl_title + "'. "
-              "Delete it manually and re-run the script to recreate it.")
+        print(("Playlist already exists with title '" + pl_title + "'. "
+              "Delete it manually and re-run the script to recreate it."))
         return
 
     pl_id = create_new_playlist(pl_title, pl_description)
@@ -217,7 +219,7 @@ def load_config_values():
         exit()
 
     if not config.has_option(section_name, 'api_key'):
-        print "Error: No developer key found in the config file.  Check the config file values."
+        print("Error: No developer key found in the config file.  Check the config file values.")
         exit()
 
     config_values = {
@@ -270,7 +272,7 @@ def get_script_dir():
 
 def main():
     """Main script function"""
-    print "### Script started at " + time.strftime("%c") + " ###\n"
+    print("### Script started at " + time.strftime("%c") + " ###\n")
 
     config = load_config_values()
     create_youtube_service(config)
@@ -315,7 +317,7 @@ def main():
         "http://www.billboard.com/charts/hot-100"
     )
 
-    print "### Script finished at " + time.strftime("%c") + " ###\n"
+    print("### Script finished at " + time.strftime("%c") + " ###\n")
 
 if __name__ == '__main__':
     main()
