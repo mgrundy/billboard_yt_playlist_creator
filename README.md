@@ -20,7 +20,9 @@ This program is built from [Adam Goforth's Billboard Top N Playlist creator](htt
 Also note that while this works it is super crufty right now. I'm not sure if the pipenv bits
 work at all. There is next to zero argument checking. Running it like this works:
 
+```sh
 python3 createsetplaylist.py -l setlist -t "Test Set Play List"
+```
 
 An example of what the script creates can be seen here:
 
