@@ -17,6 +17,10 @@ first result to a playlist with the title you specified.
 
 This program is built from [Adam Goforth's Billboard Top N Playlist creator](https://github.com/aag/billboard_yt_playlist_creator). Finding his work allowed me to get this working within an house. GPL FTW!
 
+Also note that while this works it is super crufty right now. I'm not sure if the pipenv bits
+work at all. There is next to zero argument checking. Running it like this works:
+
+python3 createsetplaylist.py -l setlist -t "Test Set Play List"
 
 An example of what the script creates can be seen here:
 
