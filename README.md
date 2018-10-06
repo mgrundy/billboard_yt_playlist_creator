@@ -15,7 +15,7 @@ put in the title as it shows on youtube (e.g. Long version, or metal version).  
 each line in the list, it searches YouTube for a video of each song and adds the 
 first result to a playlist with the title you specified.
 
-This program is built from [Adam Goforth's Billboard Top N Playlist creator](https://github.com/aag/billboard_yt_playlist_creator). Finding his work allowed me to get this working within an house. GPL FTW!
+This program is built from [Adam Goforth's Billboard Top N Playlist creator](https://github.com/aag/billboard_yt_playlist_creator). Finding his work allowed me to get this working within an hour. GPL FTW!
 
 Also note that while this works it is super crufty right now. I'm not sure if the pipenv bits
 work at all. There is next to zero argument checking. Running it like this works:
